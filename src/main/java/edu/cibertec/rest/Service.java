@@ -16,7 +16,7 @@ public class Service {
 	@Path("/{nombre}")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String saludar(@PathParam("nombre") String nombre) {
-		return "Hello " + nombre + ". Message received at " + new Date();
+		return "Hello " + nombre + ". Message received at " + new Date() + ". Todo OK.";
 	}
 	
 }
