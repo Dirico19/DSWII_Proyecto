@@ -1,7 +1,5 @@
 package com.cibertec.edu.controllers;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,12 +27,12 @@ public class LibroController {
 	private ILibroService libroService;
 	
 	@GetMapping
-	public List<Libro> listado(
+	public Page<Libro> listado(
 			@RequestParam(name = "page", defaultValue = "0", required = false) int page,
 			@RequestParam(name = "size", defaultValue = "5", required = false) int size) {
 		Pageable pageRequest = PageRequest.of(page, size);
 		Page<Libro> libros = libroService.findAll(pageRequest);
-		return libros.getContent();
+		return libros;
 	}
 	
 	@GetMapping("/{id}")
@@ -54,7 +52,7 @@ public class LibroController {
 		if (libro.getId() != id)
 			libro = null;
 		libro = libroService.save(libro);
-		return new ResponseEntity<>(libro, HttpStatus.ACCEPTED);
+		return new ResponseEntity<>(libro, HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/eliminar/{id}")

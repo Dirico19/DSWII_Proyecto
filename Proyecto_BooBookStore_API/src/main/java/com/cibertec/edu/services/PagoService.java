@@ -1,5 +1,6 @@
 package com.cibertec.edu.services;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,36 +27,35 @@ public class PagoService implements IPagoService {
 	}
 
 	@Override
-	public Page<Pago> findAll(Pageable pageable) {
-		return pagoRepository.findAll(pageable);
+	public Page<Pago> findAll(Date fechaInicio, Date fechaFin, Pageable pageable) {
+		return pagoRepository.findAll(fechaInicio, fechaFin, pageable);
 	}
 
 	@Override
-	public void save(Pago pago) {
-		pagoRepository.save(pago);
-		Prestamo prestamo = pago.getPrestamo();
+	public Page<Pago> findByIdSocio(Date fechaInicio, Date fechaFin, int idSocio, Pageable pageable) {
+		return pagoRepository.findByIdSocio(fechaInicio, fechaFin, idSocio, pageable);
+	}
+
+	@Override
+	public Pago save(int idPrestamo) {
+		Prestamo prestamo = prestamoRepository.findById(idPrestamo).orElse(null);
+		Pago pago = null;
+		if (prestamo != null && prestamo.getMora().equals("Si")) {
+			pago = new Pago();
+			pago.setPrestamo(prestamo);
+			pago.setFecPago(new Date());
+			pago.setMonto(5);
+		}
+		pago = pagoRepository.save(pago);
 		prestamo.setMora("No");
 		prestamoRepository.save(prestamo);
+		
+		return pago;
 	}
 
 	@Override
 	public Pago findOne(int id) {
 		return pagoRepository.findById(id).orElse(null);
-	}
-	
-	@Override
-	public List<Pago> findByIdSocio(int idSocio) {
-		return pagoRepository.findByIdSocio(idSocio);
-	}
-
-	@Override
-	public List<Pago> findByDate(String fecha) {
-		return pagoRepository.findByDate(fecha);
-	}
-
-	@Override
-	public List<Pago> findByDateAndSocio(String fecha, int idSocio) {
-		return pagoRepository.findByDateAndSocio(fecha, idSocio);
 	}
 
 }

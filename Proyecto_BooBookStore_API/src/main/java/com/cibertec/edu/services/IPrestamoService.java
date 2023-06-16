@@ -1,5 +1,6 @@
 package com.cibertec.edu.services;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -11,20 +12,18 @@ public interface IPrestamoService {
 
 	public List<Prestamo> findAll();
 	
-	public Page<Prestamo> findAll(Pageable pageable);
+	public Page<Prestamo> findAll(Date fechaInicio, Date fechaFin, Pageable pageable);
 	
-	public void save(Prestamo prestamo);
+	public Page<Prestamo> findByIdSocio(Date fechaInicio, Date fechaFin, int idSocio, Pageable pageable);
+	
+	public Prestamo save(long idLibro, int idSocio);
+	
+	public Prestamo update(int id);
 	
 	public Prestamo findOne(int id);
 	
 	public int devolucionesPendientes(int id);
 	
 	public int morasPendientes(int id);
-	
-	public List<Prestamo> findByIdSocio(int idSocio);
-	
-	public List<Prestamo> findByDateAndSocio(String date, int idSocio);
-	
-	public List<Prestamo> findByDate(String date);
 	
 }
