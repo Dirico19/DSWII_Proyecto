@@ -27,18 +27,21 @@ public class LibroController {
 	private ILibroService libroService;
 	
 	@GetMapping
-	public Page<Libro> listado(
+	public ResponseEntity<Page<Libro>> listado(
 			@RequestParam(name = "page", defaultValue = "0", required = false) int page,
 			@RequestParam(name = "size", defaultValue = "5", required = false) int size) {
 		Pageable pageRequest = PageRequest.of(page, size);
 		Page<Libro> libros = libroService.findAll(pageRequest);
-		return libros;
+		return new ResponseEntity<>(libros, HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Libro> consultar(@PathVariable(name = "id") long id) {
 		Libro libro = libroService.findOne(id);
-		return new ResponseEntity<>(libro, HttpStatus.OK);
+		if (libro != null)
+			return new ResponseEntity<>(libro, HttpStatus.OK);
+		else
+			return new ResponseEntity<>(libro, HttpStatus.BAD_REQUEST);
 	}
 	
 	@PostMapping("/registrar")
@@ -47,9 +50,9 @@ public class LibroController {
 		return new ResponseEntity<>(libro, HttpStatus.CREATED);
 	}
 	
-	@PutMapping("/actualizar/{id}")
-	public ResponseEntity<Libro> actualizar(@RequestBody Libro libro, @PathVariable(name = "id") long id) {
-		if (libro.getId() != id)
+	@PutMapping("/actualizar")
+	public ResponseEntity<Libro> actualizar(@RequestBody Libro libro) {
+		if (libro.getId() == 0)
 			libro = null;
 		libro = libroService.save(libro);
 		return new ResponseEntity<>(libro, HttpStatus.OK);
