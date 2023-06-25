@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cibertec.edu.entities.Libro;
 import com.cibertec.edu.services.ILibroService;
 
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/libros")
 public class LibroController {
@@ -45,15 +48,16 @@ public class LibroController {
 	}
 	
 	@PostMapping("/registrar")
-	public ResponseEntity<Libro> registrar(@RequestBody Libro libro) {
+	public ResponseEntity<Libro> registrar(@Valid @RequestBody Libro libro) {
 		libro = libroService.save(libro);
 		return new ResponseEntity<>(libro, HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/actualizar")
-	public ResponseEntity<Libro> actualizar(@RequestBody Libro libro) {
-		if (libro.getId() == 0)
-			libro = null;
+	public ResponseEntity<Libro> actualizar(@Valid @RequestBody Libro libro) {
+		Libro obj = libroService.findOne(libro.getId());
+		if (obj == null)
+			throw new EntityNotFoundException("Libro no encontrado con el ID: " + libro.getId());
 		libro = libroService.save(libro);
 		return new ResponseEntity<>(libro, HttpStatus.OK);
 	}
