@@ -18,4 +18,8 @@ public interface IUsuarioService {
 	public Usuario findOne(int Id);
 	
 	public Usuario findByNombre(String nombre);
+	
+	public Usuario cambiarContraseña(String actual, String nueva, int id);
+	
+	public void delete(int id);
 }

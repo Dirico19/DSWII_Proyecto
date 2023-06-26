@@ -13,7 +13,7 @@ public interface ISocioService {
 	
 	public Page<Socio> findAll(Pageable pageable);
 	
-	public void save(Socio socio);
+	public Socio save(Socio socio);
 	
 	public Socio findOne(int id);
 	

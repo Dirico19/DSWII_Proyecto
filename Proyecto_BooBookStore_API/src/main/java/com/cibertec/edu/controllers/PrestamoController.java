@@ -19,7 +19,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cibertec.edu.entities.Prestamo;
+import com.cibertec.edu.entities.Socio;
 import com.cibertec.edu.services.IPrestamoService;
+import com.cibertec.edu.services.ISocioService;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @RestController
 @RequestMapping("/api/prestamos")
@@ -27,6 +31,8 @@ public class PrestamoController {
 
 	@Autowired
 	private IPrestamoService prestamoService;
+	@Autowired
+	private ISocioService socioService;
 	
 	@GetMapping
 	public Page<Prestamo> listado(
@@ -67,6 +73,24 @@ public class PrestamoController {
 	public ResponseEntity<Prestamo> devolver(@PathVariable(name = "id") int id) {
 		Prestamo prestamo = prestamoService.update(id);
 		return new ResponseEntity<>(prestamo, HttpStatus.OK);
+	}
+	
+	@GetMapping("/devolucionesPendientes/{id}")
+	public ResponseEntity<Integer> devolucionesPendientes(@PathVariable(name = "id") int id) {
+		Socio socio = socioService.findOne(id);
+        if (socio == null)
+            throw new EntityNotFoundException("Socio no encontrado con el ID: " + id);
+		int total = prestamoService.devolucionesPendientes(id);
+		return new ResponseEntity<>(total, HttpStatus.OK);
+	}
+	
+	@GetMapping("/morasPendientes/{id}")
+	public ResponseEntity<Integer> morasPendientes(@PathVariable(name = "id") int id) {
+		Socio socio = socioService.findOne(id);
+        if (socio == null)
+            throw new EntityNotFoundException("Socio no encontrado con el ID: " + id);
+		int total = prestamoService.morasPendientes(id);
+		return new ResponseEntity<>(total, HttpStatus.OK);
 	}
 	
 }

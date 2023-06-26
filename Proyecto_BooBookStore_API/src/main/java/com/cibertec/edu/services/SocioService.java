@@ -27,8 +27,8 @@ public class SocioService implements ISocioService {
 	}
 
 	@Override
-	public void save(Socio socio) {
-		socioRepository.save(socio);
+	public Socio save(Socio socio) {
+		return socioRepository.save(socio);
 	}
 
 	@Override
