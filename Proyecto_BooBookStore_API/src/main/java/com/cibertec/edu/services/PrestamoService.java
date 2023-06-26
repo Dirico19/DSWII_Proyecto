@@ -15,6 +15,8 @@ import com.cibertec.edu.repositories.LibroRepository;
 import com.cibertec.edu.repositories.PrestamoRepository;
 import com.cibertec.edu.repositories.SocioRepository;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service
 public class PrestamoService implements IPrestamoService {
 
@@ -46,6 +48,11 @@ public class PrestamoService implements IPrestamoService {
 		Socio socio = socioRepository.findById(idSocio).orElse(null);
 		Prestamo prestamo = null;
 		
+		if (libro == null)
+			throw new EntityNotFoundException("Libro no encontrado con id: " + idLibro);
+		if (socio == null)
+			throw new EntityNotFoundException("Socio no encontrado con id: " + idSocio);
+		
 		if (libro != null && socio != null) {
 			prestamo = new Prestamo();
 			prestamo.setSocio(socio);
@@ -70,6 +77,8 @@ public class PrestamoService implements IPrestamoService {
 			prestamo.setEstado("Devuelto");
 			if (prestamo.getFecDevolucion().getTime() >= prestamo.getFecLimite().getTime())
 				prestamo.setMora("Si");
+		} else {
+			throw new EntityNotFoundException("Prestamo no encontrado con id: " + id);
 		}
 		prestamo = prestamoRepository.save(prestamo);
 		Libro libro = prestamo.getLibro();
@@ -80,7 +89,8 @@ public class PrestamoService implements IPrestamoService {
 
 	@Override
 	public Prestamo findOne(int id) {
-		return prestamoRepository.findById(id).orElse(null);
+		Prestamo prestamo = prestamoRepository.findById(id).orElse(null);
+		return prestamo;
 	}
 
 	@Override

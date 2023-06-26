@@ -13,7 +13,7 @@ public interface IUsuarioService {
 	
 	public Page<Usuario> findAll(Pageable pageable);
 	
-	public void save(Usuario usuario);
+	public Usuario save(Usuario usuario);
 	
 	public Usuario findOne(int Id);
 	

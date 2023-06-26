@@ -13,7 +13,7 @@ public interface IEmpleadoService {
 	
 	public Page<Empleado> findAll(Pageable pageable);
 	
-	public void save(Empleado empleado);
+	public Empleado save(Empleado empleado);
 	
 	public Empleado findOne(int id);
 	
