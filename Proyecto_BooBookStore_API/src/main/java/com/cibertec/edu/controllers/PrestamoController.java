@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -60,11 +59,13 @@ public class PrestamoController {
 	@GetMapping("/{id}")
 	public ResponseEntity<Prestamo> consultar(@PathVariable(name = "id") int id) {
 		Prestamo prestamo = prestamoService.findOne(id);
+		if (prestamo == null)
+			throw new EntityNotFoundException("Prestamo no encontrado con id: " + id);
 		return new ResponseEntity<>(prestamo, HttpStatus.OK);
 	}
 	
-	@PostMapping("/confirmar/{idLibro}")
-	public ResponseEntity<Prestamo> confirmar(@PathVariable(name = "idLibro") long idLibro, @RequestBody int idSocio) {
+	@PostMapping("/confirmar/{idLibro}/{idSocio}")
+	public ResponseEntity<Prestamo> confirmar(@PathVariable(name = "idLibro") long idLibro, @PathVariable(name = "idSocio") int idSocio) {
 		Prestamo prestamo = prestamoService.save(idLibro, idSocio);
 		return new ResponseEntity<>(prestamo, HttpStatus.CREATED);
 	}

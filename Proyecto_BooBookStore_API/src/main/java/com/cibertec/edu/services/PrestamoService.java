@@ -52,7 +52,8 @@ public class PrestamoService implements IPrestamoService {
 			throw new EntityNotFoundException("Libro no encontrado con id: " + idLibro);
 		if (socio == null)
 			throw new EntityNotFoundException("Socio no encontrado con id: " + idSocio);
-		
+		if (libro.getStock() <= 0)
+			throw new IllegalArgumentException("El stock es insuficiente");
 		if (libro != null && socio != null) {
 			prestamo = new Prestamo();
 			prestamo.setSocio(socio);

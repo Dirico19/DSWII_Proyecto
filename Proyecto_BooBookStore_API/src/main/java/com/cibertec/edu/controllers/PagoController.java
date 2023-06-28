@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cibertec.edu.entities.Pago;
 import com.cibertec.edu.services.IPagoService;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @RestController
 @RequestMapping("/api/pagos")
 public class PagoController {
@@ -58,6 +60,8 @@ public class PagoController {
 	@GetMapping("/{id}")
 	public ResponseEntity<Pago> consultar(@PathVariable(name = "id") int id) {
 		Pago pago = pagoService.findOne(id);
+		if (pago == null)
+			throw new EntityNotFoundException("Pago no encontrado con id: " + id);
 		return new ResponseEntity<>(pago, HttpStatus.OK);
 	}
 	

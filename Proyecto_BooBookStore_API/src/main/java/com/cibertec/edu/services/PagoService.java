@@ -13,6 +13,8 @@ import com.cibertec.edu.entities.Prestamo;
 import com.cibertec.edu.repositories.PagoRepository;
 import com.cibertec.edu.repositories.PrestamoRepository;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service
 public class PagoService implements IPagoService {
 
@@ -40,11 +42,15 @@ public class PagoService implements IPagoService {
 	public Pago save(int idPrestamo) {
 		Prestamo prestamo = prestamoRepository.findById(idPrestamo).orElse(null);
 		Pago pago = null;
-		if (prestamo != null && prestamo.getMora().equals("Si")) {
+		if (prestamo == null) {
+			throw new EntityNotFoundException("Prestamo no encontrado con id: " + idPrestamo);
+		} else if (prestamo != null && prestamo.getMora().equals("Si")) {
 			pago = new Pago();
 			pago.setPrestamo(prestamo);
 			pago.setFecPago(new Date());
 			pago.setMonto(5);
+		} else {
+			throw new IllegalArgumentException("El prestamo no tiene mora");
 		}
 		pago = pagoRepository.save(pago);
 		prestamo.setMora("No");
